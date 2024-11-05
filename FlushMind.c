@@ -541,7 +541,146 @@ void registrarMedico(){
 //Alan
 //Alan
 void actualizarInformacionMedico(){
-   
+    Medico med;
+    FILE *ptrmedicos = fopen("registroMedico.bin", "rb");
+    int opcion, i;
+    char respuesta[100];
+    char opc[100];
+    char negativo[] = ("Salir");
+    if (ptrmedicos == NULL){
+        printf("\nNo hay medicos registrados por el momento, regrese cuando alla registrado a algun medico\n");
+        fclose(ptrmedicos);
+    }else{
+        fclose(ptrmedicos);
+        printf("\n                     Actualizar datos\n");
+        printf("\n¿Que medico desea actualizar los datos?");
+        printf("\n(Escriba el nombre del medico)");
+        do{
+            opc[0] = '0';
+            ptrmedicos = fopen("registroMedico.bin", "rb");
+            printf("\nLista de medicos:");
+            fread(&med, sizeof(Medico), 1, ptrmedicos);
+            do{
+                printf("\n%s ", med.nombre);
+                fread(&med, sizeof(Medico), 1, ptrmedicos);
+            } while (feof(ptrmedicos) == 0);
+            fclose(ptrmedicos);
+            printf("\n(Si desea detener esta accion escriba 'Salir')\n");
+            fflush(stdin);
+            scanf("%[^\n]%*c", opc);
+            if (strcmp(opc, negativo) != 0){
+                ptrmedicos = fopen("registroMedico.bin", "r+b");
+                fread(&med, sizeof(Medico), 1, ptrmedicos);
+                do{
+                    if (strcmp(opc, med.nombre) == 0){
+                            do{
+                                respuesta[0] = '0';
+                                printf("¿Estas seguro de actualizar la informacion de este medico?");
+                                printf("\n[%s]     1)Si    2)No     ", med.nombre);
+                                fflush(stdin);
+                                scanf("%[^\n]%*c", respuesta);
+                                opcion = atoi(respuesta);
+                                fflush(stdin);
+                                if (opcion != 1 && opcion != 2){
+                                    printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                                    fflush(stdin);
+                                }else{
+                                    for (i = 0; i < (int)strlen(respuesta); i++){
+                                        if (!isdigit(respuesta[i])){
+                                            printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                                            opcion = 0;
+                                            break;
+                                        }
+                                    }
+                                }
+                            } while (opcion != 1 && opcion != 2);
+                            if (opcion == 1){
+                                fseek(ptrmedicos,-(long)sizeof(Medico),SEEK_CUR);
+                                fwrite(&med, sizeof(Medico), 1, ptrmedicos);
+                                int opcion, longitud, i;
+                                char contra[100];
+                                printf("\n              Modificar informacion personal\n");
+                                printf("\nNombre: %s", med.nombre);
+                                printf("\nCedula: %s", med.cedula);
+                                printf("\nDireccion: %s", med.direccion);
+                                printf("\nTelefono: %s", med.telefono);
+                                printf("\nCorreo electronico: %s", med.correo);
+                                printf("\nContraseña: %s", med.login);
+                                printf("\nSi deseas omitir algun dato menos la contraseña solo preciona Enter\n");  
+                                printf("\nIngrese el nuevo nombre completo: ");
+                                scanf("%[^\n]%*c", med.nombre);
+                                fflush(stdin);
+                                    do{
+                                        do{
+                                            printf("Ingrese la nueva contraseña (Ingrese minimo 5 caracteres): ");
+                                            scanf("%[^\n]%*c", med.login);
+                                            fflush(stdin);
+                                            longitud = strlen(med.login);
+                                            if (longitud < 5){
+                                                printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                                            }
+                                        } while (longitud < 5);
+                                    printf("Vuelva a ingresar la nueva contraseña: ");
+                                    scanf("%[^\n]%*c", contra);
+                                    fflush(stdin);
+                                    if (strcmp(med.login, contra) != 0){
+                                        printf("Las contraseñas no coinciden, intentalo nuevamente\n");
+                                    }
+                                    } while (strcmp(med.login, contra) != 0);
+                                    do{
+                                        printf("Cedula profesional (8 caracteres): ");
+                                        scanf("%[^\n]%*c", med.cedula);
+                                        fflush(stdin);
+                                        longitud = strlen(med.cedula);
+                                        if (longitud != 8){
+                                            printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                                        }
+                                    } while (longitud != 8);
+                                    printf("Direccion: ");
+                                    scanf("%[^\n]%*c", med.direccion);
+                                    fflush(stdin);
+                                    do{
+                                        printf("Telefono(10 digitos): ");
+                                        scanf("%[^\n]%*c", med.telefono);
+                                        fflush(stdin);
+                                        if(strlen(med.telefono) == 10){
+                                            for (i = 0; i < (int)strlen(med.telefono); i++){
+                                                if(!isdigit(med.telefono[i])){
+                                                    printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                                                    opcion = 0;
+                                                    break;
+                                                }
+                                                opcion = 1;
+                                            }
+                                        }else{
+                                            printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                                            opcion = 0;
+                                        }
+                                    }while(opcion != 1);
+                                    printf("Correo electronico: ");
+                                    scanf("%[^\n]%*c", med.correo);
+                                    fflush(stdin);
+                                    printf("Informacion actualizada con exito\n");
+                                    ptrmedicos = fopen("registroMedico.bin", "wb");
+                                    fwrite(&med, sizeof(Medico), 1, ptrmedicos);
+                                    fclose(ptrmedicos);
+                            }   
+                        break;
+                    }else{
+                        fread(&med, sizeof(Medico), 1, ptrmedicos);
+                        opcion = 0;
+                    }
+                } while (feof(ptrmedicos) == 0);
+                if (opcion == 0){
+                    printf("Medico no encontrado, intentelo nuevamente");
+                }
+            }else{
+                opcion = 1;
+            }
+            fclose(ptrmedicos);
+        } while (opcion == 0 || opcion == 2);
+        printf("Saliendo al menu Gestionar medicos\n");
+    }
 }
 //Alan
 //Alan
