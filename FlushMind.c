@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <time.h>
 
 typedef struct Admin{
     char nombre[50];
@@ -32,7 +33,13 @@ typedef struct Pac{
     char login[100];
 }Paciente;
 
-
+typedef struct Cues{
+    int estado;
+    int cuestionario;
+    char paciente[50];
+    char observaciones[500];
+    char fecha[40];
+}Cuestionarios;
 
 void registroAdministrador(int, Administrador *);
 void loginAdministrador();
@@ -45,12 +52,17 @@ void eliminarMedico();
 void generarInformesAdministrador();
 void loginMedico();
 void menuMedico(Medico *);
-void modificarInformacionMedico(Medico *);
+void modificarInformacionMedico(Medico **);
 void gestionarPaciente(Medico *);
 void registrarPaciente(Medico *);
 void actualizarInformacionPaciente();
 void cambiarEstatusPaciente();
 void evaluarPaciente();
+void evaluacion(Paciente *);
+void registrarConsulta(Paciente *);
+void observaciones();
+void asignarCuestionarios();
+void verResultados();
 void eliminarPaciente();
 void generarInformesMedico();
 void loginPaciente();
@@ -896,62 +908,28 @@ void eliminarMedico(){
     }
 }
 
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
 void generarInformesAdministrador(){
     /*Cuando puedas me dices que necesitas para generar los informes*/
     printf("\nSeleccionado Generar Informes\n");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-
 void loginMedico(){
-    printf("Login Medico");
+    printf("\nLogin Medico\n");
     /*1) El archivo en donde estan guardados los datos del medico se llama registroMedico.bin*/
     /*2) Necesito que guardes la informacion del medico en el struck que esta, crea la 
       variable con el nombre que quieras, asi que me pasas el struct a la funcion. */
@@ -1003,7 +981,7 @@ void menuMedico(Medico *ptrmedico){
             }
             switch (opcion){
                 case 1:
-                    modificarInformacionMedico(ptrmedico);
+                    modificarInformacionMedico(&ptrmedico);
                     break;
                 case 2:
                     gestionarPaciente(ptrmedico);
@@ -1023,19 +1001,19 @@ void menuMedico(Medico *ptrmedico){
     }while (opcion != 4 || opcion == 0);
 }
 
-void modificarInformacionMedico(Medico *medico){
-    Medico medicoBuscado;
+void modificarInformacionMedico(Medico **medico){
+    Medico medicoBuscado, aux;
     int opcion, longitud, i;
-    char opc[3];
+    char opc[100];
     char contra[100];
-    strcpy(medicoBuscado.nombre, medico->nombre);
+    strcpy(medicoBuscado.nombre, (*medico)->nombre);
     printf("\n              Modificar informacion personal\n");
-    printf("\nNombre: %s", medico->nombre);
-    printf("\nCedula: %s", medico->cedula);
-    printf("\nDireccion: %s", medico->direccion);
-    printf("\nTelefono: %s", medico->telefono);
-    printf("\nCorreo electronico: %s", medico->correo);
-    printf("\nContraseña: %s", medico->login);
+    printf("\nNombre: %s", (*medico)->nombre);
+    printf("\nCedula: %s", (*medico)->cedula);
+    printf("\nDireccion: %s", (*medico)->direccion);
+    printf("\nTelefono: %s", (*medico)->telefono);
+    printf("\nCorreo electronico: %s", (*medico)->correo);
+    printf("\nContraseña: %s", (*medico)->login);
     do{
         printf("\nSi desea cambiar su informacion personal presione 1, de lo contrario presione 2: ");
         scanf("%[^\n]%*c", opc);
@@ -1056,14 +1034,14 @@ void modificarInformacionMedico(Medico *medico){
     printf("Si deseas omitir algun dato menos la contraseña solo preciona Enter\n");  
     if (opcion == 1){
         printf("\nIngrese el nuevo nombre completo: ");
-        scanf("%[^\n]%*c", medico->nombre);
+        scanf("%[^\n]%*c", (*medico)->nombre);
         fflush(stdin);
         do{
             do{
                 printf("Ingrese la nueva contraseña (Ingrese minimo 5 caracteres): ");
-                scanf("%[^\n]%*c", medico->login);
+                scanf("%[^\n]%*c", (*medico)->login);
                 fflush(stdin);
-                longitud = strlen(medico->login);
+                longitud = strlen((*medico)->login);
                 if (longitud < 5){
                     printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
                 }
@@ -1071,29 +1049,29 @@ void modificarInformacionMedico(Medico *medico){
             printf("Vuelva a ingresar la nueva contraseña: ");
             scanf("%[^\n]%*c", contra);
             fflush(stdin);
-            if (strcmp(medico->login, contra) != 0){
+            if (strcmp((*medico)->login, contra) != 0){
                 printf("Las contraseñas no coinciden, intentalo nuevamente\n");
             }
-        } while (strcmp(medico->login, contra) != 0);
+        } while (strcmp((*medico)->login, contra) != 0);
         do{
             printf("Cedula profesional (8 caracteres): ");
-            scanf("%[^\n]%*c", medico->cedula);
+            scanf("%[^\n]%*c", (*medico)->cedula);
             fflush(stdin);
-            longitud = strlen(medico->cedula);
+            longitud = strlen((*medico)->cedula);
             if (longitud != 8){
                 printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
             }
         } while (longitud != 8);
         printf("Direccion: ");
-        scanf("%[^\n]%*c", medico->direccion);
+        scanf("%[^\n]%*c", (*medico)->direccion);
         fflush(stdin);
         do{
             printf("Telefono(10 digitos): ");
-            scanf("%[^\n]%*c", medico->telefono);
+            scanf("%[^\n]%*c", (*medico)->telefono);
             fflush(stdin);
-            if(strlen(medico->telefono) == 10){
-                for (i = 0; i < (int)strlen(medico->telefono); i++){
-                    if(!isdigit(medico->telefono[i])){
+            if(strlen((*medico)->telefono) == 10){
+                for (i = 0; i < (int)strlen((*medico)->telefono); i++){
+                    if(!isdigit((*medico)->telefono[i])){
                         printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
                         opcion = 0;
                         break;
@@ -1106,17 +1084,18 @@ void modificarInformacionMedico(Medico *medico){
             }
         }while(opcion != 1);
         printf("Correo electronico: ");
-        scanf("%[^\n]%*c", medico->correo);
+        scanf("%[^\n]%*c", (*medico)->correo);
         fflush(stdin);
         printf("Informacion actualizada con exito\n");
         FILE *modMedico = fopen("registroMedico.bin", "r+b");
-        fread(&medicoBuscado, sizeof(Medico), 1, modMedico);
+        fread(&aux, sizeof(Medico), 1, modMedico);
         do{
-            if(strcmp(medico->nombre, medicoBuscado.nombre) == 0){
+            if(strcmp(aux.nombre, medicoBuscado.nombre) == 0){
                 fseek(modMedico,-(long)sizeof(Medico),SEEK_CUR);
-                fwrite(medico, sizeof(Administrador), 1, modMedico);
+                fwrite(*medico, sizeof(Medico), 1, modMedico);
+                break;
             }
-            fread(&medicoBuscado, sizeof(Medico), 1, modMedico);
+            fread(&aux, sizeof(Medico), 1, modMedico);
         } while (feof(modMedico) == 0);
         fclose(modMedico);
     }
@@ -1172,7 +1151,7 @@ void gestionarPaciente(Medico *medico){
 }
 
 void registrarPaciente(Medico *medico){
-    printf("\nRegistrar Paciente\n");
+    printf("\nDatos del nuevo paciente\n");
     Paciente pac;
     FILE *registrarPaciente;
     int opcion, i, longitud;
@@ -1216,7 +1195,7 @@ void registrarPaciente(Medico *medico){
     do{
         do{
             strcpy(pac.nss, negativo);
-            printf("Cedula profecional(11 caracteres): ");
+            printf("Numero de seguridad social (11 caracteres): ");
             scanf("%[^\n]%*c", pac.nss);
             fflush(stdin);
             longitud = strlen(pac.nss);
@@ -1275,7 +1254,6 @@ void registrarPaciente(Medico *medico){
 }
 
 void actualizarInformacionPaciente(){
-    printf("\nActualizar informacion de paciente\n");
     Paciente pac;
     FILE *ptrpacientes = fopen("registroPaciente.bin", "rb");
     int opcion, i;
@@ -1310,7 +1288,7 @@ void actualizarInformacionPaciente(){
                     if (strcmp(opc, pac.nombre) == 0){
                         printf("\n              Modificar informacion personal\n");
                         printf("\nNombre: %s", pac.nombre);
-                        printf("\nCedula: %s", pac.nss);
+                        printf("\nNSS: %s", pac.nss);
                         printf("\nTelefono: %s", pac.telefono);
                         printf("\nCorreo electronico: %s", pac.correo);
                         printf("\nContraseña: %s", pac.login);
@@ -1392,8 +1370,8 @@ void actualizarInformacionPaciente(){
                                     fflush(stdin);
                                     printf("Informacion actualizada con exito\n");
                                     printf("Informacion actualizada con exito\n");
-                                    fseek(ptrpacientes,-(long)sizeof(Medico),SEEK_CUR);
-                                    fwrite(&pac, sizeof(Medico), 1, ptrpacientes);
+                                    fseek(ptrpacientes,-(long)sizeof(Paciente),SEEK_CUR);
+                                    fwrite(&pac, sizeof(Paciente), 1, ptrpacientes);
                             }   
                         break;
                     }else{
@@ -1414,7 +1392,6 @@ void actualizarInformacionPaciente(){
 }
 
 void cambiarEstatusPaciente(){
-    printf("\nCambiar estatus de paciente\n");
     Paciente pac;
     FILE *ptrpacientes = fopen("registroPaciente.bin", "rb");
     int opcion, i;
@@ -1422,7 +1399,7 @@ void cambiarEstatusPaciente(){
     char opc[100];
     char negativo[] = ("Salir");
     if (ptrpacientes == NULL){
-        printf("\nNo hay medicos registrados por el momento, regrese cuando alla registrado a algun paciente\n");
+        printf("\nNo hay pacientes registrados por el momento, regrese cuando alla registrado a algun paciente\n");
         fclose(ptrpacientes);
     }else{
         fclose(ptrpacientes);
@@ -1432,7 +1409,7 @@ void cambiarEstatusPaciente(){
         do{
             opc[0] = '0';
             ptrpacientes = fopen("registroPaciente.bin", "rb");
-            printf("\nLista de medicos:");
+            printf("\nLista de pacientes:");
             fread(&pac, sizeof(Paciente), 1, ptrpacientes);
             do{
                 printf("\n%s ", pac.nombre);
@@ -1477,7 +1454,7 @@ void cambiarEstatusPaciente(){
                             } while (opcion != 1 && opcion != 2);
                             if (opcion == 1){
                                 pac.estado = 0;
-                                fseek(ptrpacientes,-(long)sizeof(Medico),SEEK_CUR);
+                                fseek(ptrpacientes,-(long)sizeof(Paciente),SEEK_CUR);
                                 fwrite(&pac, sizeof(Paciente), 1, ptrpacientes);
                                 printf("Deshabilitado!\n");
                             }
@@ -1506,7 +1483,7 @@ void cambiarEstatusPaciente(){
                                 } while (opcion != 1 && opcion != 2);
                                 if (opcion == 1){
                                     pac.estado = 1;
-                                    fseek(ptrpacientes,-(long)sizeof(Medico),SEEK_CUR);
+                                    fseek(ptrpacientes,-(long)sizeof(Paciente),SEEK_CUR);
                                     fwrite(&pac, sizeof(Paciente), 1, ptrpacientes);
                                     printf("Habilitado!\n");
                                 }
@@ -1531,62 +1508,217 @@ void cambiarEstatusPaciente(){
 }
 
 void evaluarPaciente(){
-    printf("\nEvaluar paciente\n");
+    Paciente pac;
+    FILE *ptrpacientes = fopen("registroPaciente.bin", "rb");
+    int opcion;
+    char opc[100];
+    char negativo[] = ("Salir");
+    if (ptrpacientes == NULL){
+        printf("\nNo hay pacientes registrados por el momento, regrese cuando alla registrado a algun medico\n");
+        fclose(ptrpacientes);
+    }else{
+        fclose(ptrpacientes);
+        printf("\nEvaluar pacientes\n");
+        printf("\n¿Que paciente desea evaluar?");
+        printf("\n(Escriba el nombre del paciente)");
+        do
+        {
+            opc[0] = '0';
+            ptrpacientes = fopen("registroPaciente.bin", "rb");
+            printf("\nLista de pacientes:");
+            fread(&pac, sizeof(Paciente), 1, ptrpacientes);
+            do{
+                printf("\n%s ", pac.nombre);
+                fread(&pac, sizeof(Paciente), 1, ptrpacientes);
+            } while (feof(ptrpacientes) == 0);
+            fclose(ptrpacientes);
+            printf("\n(Si desea detener esta accion escriba 'Salir')\n");
+            fflush(stdin);
+            scanf("%[^\n]%*c", opc);
+            if (strcmp(opc, negativo) != 0){
+                ptrpacientes = fopen("registroPaciente.bin", "r+b");
+                fread(&pac, sizeof(Paciente), 1, ptrpacientes);
+                do{
+                    if (strcmp(opc, pac.nombre) == 0){
+                        evaluacion(&pac);
+                        opcion = 2;
+                        break;
+                    }else{
+                        fread(&pac, sizeof(Paciente), 1, ptrpacientes);
+                        opcion = 0;
+                    }
+                } while (feof(ptrpacientes) == 0);
+                if (opcion == 0){
+                    printf("Paciente no encontrado, intentelo nuevamente");
+                }
+            }else{
+                opcion = 1;
+            }
+            fclose(ptrpacientes);
+        } while (opcion == 0 || opcion == 2);
+        printf("Saliendo al menu Gestionar pacientes\n");
+    }
 }
 
+void evaluacion(Paciente *ptrpaciente){
+    int opcion, i;
+    char opc[100];
+    do{
+        opc[0] = '0';
+        printf("\n          %s\n", ptrpaciente->nombre);
+        printf("\n¿Que accion desea realizar? (Seleccione el número de la accion)");
+        printf("\n1) Registrar consulta (Se registrara la fecha de hoy)");
+        printf("\n2) Agregar observaciones o recomendaciones");
+        printf("\n3) Asignar cuestionario");
+        printf("\n4) Ver resultados de los cuestionarios");
+        printf("\n5) Salir\n");
+        scanf("%[^\n]%*c", opc);
+        opcion = atoi(opc);
+        if((opcion > 0 && opcion < 6)){
+            for (i = 0; i < (int)strlen(opc); i++){
+                if(!isdigit(opc[i])){
+                    printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+                    opcion = 0;
+                    break;
+                }
+            }
+            switch (opcion){
+                case 1:
+                    registrarConsulta(ptrpaciente);
+                    break;
+                case 2:
+                    observaciones();
+                    break;
+                case 3:
+                    asignarCuestionarios();
+                    break;
+                case 4:
+                    verResultados();
+                    break;
+            }
+        }else{
+            printf("El dato ingresado no es valido, por favor intentalo nuevamente\n");
+            fflush(stdin);
+            opcion = 0;
+        }
+    }while (opcion != 5 || opcion == 0);
+}
+
+void registrarConsulta(Paciente *ptrpaciente){
+    time_t fecha;
+    Cuestionarios regFecha, comparacion;
+    FILE *ptrCuestionarios;
+    int opcion;
+    char day1[3];
+    char month1[4];
+    char year1[5];
+    char day2[3];
+    char month2[4];
+    char year2[5];
+    time(&fecha);
+    strcpy(comparacion.fecha, ctime(&fecha));
+    strncpy(day1, (char*)&comparacion.fecha[8], 2);
+    strncpy(month1, (char*)&comparacion.fecha[4], 3);
+    strncpy(year1, (char*)&comparacion.fecha[20], 4);
+    ptrCuestionarios = fopen("registroCuestionarios.bin", "rb");
+    if (ptrCuestionarios == NULL){
+        fclose(ptrCuestionarios);
+        ptrCuestionarios = fopen("registroCuestionarios.bin", "wb");
+        fclose(ptrCuestionarios);
+    }
+    ptrCuestionarios = fopen("registroCuestionarios.bin", "r+b");
+    fread(&regFecha, sizeof(Cuestionarios), 1, ptrCuestionarios);
+    do{
+        strncpy(day2, (char*)&regFecha.fecha[8], 2);
+        strncpy(month2, (char*)&regFecha.fecha[4], 3);
+        strncpy(year2, (char*)&regFecha.fecha[20], 4);
+        if ((strcmp(day1, day2) == 0) && (strcmp(month1, month2) == 0) && (strcmp(year1, year2) == 0) && strcmp(ptrpaciente->nombre, regFecha.paciente) == 0){
+            opcion = 0;
+            break;
+        }else{
+            fread(&regFecha, sizeof(Cuestionarios), 1, ptrCuestionarios);
+            opcion = 1;
+        }
+    } while (feof(ptrCuestionarios) == 0);
+    fclose(ptrCuestionarios);
+    if (opcion == 1){
+        ptrCuestionarios = fopen("registroCuestionarios.bin", "ab");
+        strcpy(comparacion.paciente, ptrpaciente->nombre);
+        fwrite(&comparacion, sizeof(Cuestionarios), 1, ptrCuestionarios);
+        fclose(ptrCuestionarios);
+    }
+    if (opcion == 0){
+        printf("\nSolo puede registrar una cita por dia\n");
+    }
+}
+
+void observaciones(){
+    printf("\nSeleccionado Observaciones\n");
+}
+
+void asignarCuestionarios(){
+    printf("\nSeleccionado Asignar cuestionarios\n");
+}
+
+void verResultados(){
+    printf("\nSeleccionado Ver resultados\n");
+}
+
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
 void eliminarPaciente(){
-    printf("\nEliminar paciente\n");
+    printf("\nEliminar pacientes\n");
 }
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
+//Alan
 
-
-///////////////////////////////////////////////////////
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
+//Eder
 void generarInformesMedico(){
     printf("\nSeleccionado Generar Informes\n");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
-//Eder
 void loginPaciente(){
-    printf("Login Paciente");
+    printf("\nLogin Paciente\n");
 }
 //Eder
 //Eder
@@ -1603,3 +1735,4 @@ void loginPaciente(){
 //Eder
 //Eder
 //Eder
+
